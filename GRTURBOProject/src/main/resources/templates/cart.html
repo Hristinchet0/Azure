@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="stylesheet" href="nav.css" th:href="@{/css/nav.css}">
+    <title>GR Turbo Cart</title>
+</head>
+<body>
+<div th:replace="fragments/navbar">Navbar</div>
+<main>
+    <div class="cart-box-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div th:if="${check}" class="text-center alert-warning">
+                        <p th:text="${check}"></p>
+                    </div>
+                    <div th:if="${addToCartSuccessMessage}" class="text-center alert-warning">
+                        <p th:text="${addToCartSuccessMessage}"></p>
+                    </div>
+                    <div class="table-main table-responsive" th:if="${check == null}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th th:text="#{cart_img}">Image</th>
+                                <th th:text="#{cart_name}">Product Name</th>
+                                <th th:text="#{cart_brand}">Brand</th>
+                                <th th:text="#{cart_price}">Price</th>
+                                <th th:text="#{cart_quantity}">Quantity</th>
+                                <th th:text="#{cart_total}">Total</th>
+                                <th th:text="#{cart_update}">Update</th>
+                                <th th:text="#{cart_delete}">Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cartItem : ${shoppingCart.cartItems}">
+                                <td class="thumbnail-img">
+                                    <a href="#">
+                                        <img class="img-fluid"
+                                             th:src="*{cartItem.product.imgUrl}" alt=""/>
+                                    </a>
+                                </td>
+                                <td class="name-pr">
+                                    <p th:text="${cartItem.product.name}"></p>
+                                </td>
+                                <td class="brand-pr">
+                                    <p th:text="${cartItem.product.brand}"></p>
+                                </td>
+                                <td class="price-pr">
+                                    <p th:text="${cartItem.product.price} + 'BGN'"></p>
+                                </td>
+
+                                <form
+                                        th:action="@{/update-cart}"
+                                        method="post">
+                                    <input type="hidden" name="id" th:value="${cartItem.product.id}">
+                                    <td class="quantity-box"><label>
+                                        <input type="number" size="4" th:value="${cartItem.quantity}"
+                                               name="quantity" min="0" step="1"
+                                               class="c-input-text qty text">
+                                    </label></td>
+                                    <td class="total-pr">
+                                        <p th:text="${cartItem.totalPrice} + 'BGN'"></p>
+                                    </td>
+                                    <td>
+                                        <button type="submit" name="action" value="update" title="Update"
+                                                class="btn btn-primary" th:text="#{cart_update}">
+                                            Update
+                                        </button>
+                                    </td>
+                                </form>
+                                    <td>
+                                        <a href="" th:href="@{/cart/delete/cartItem/{id}(id=${cartItem.id})}" class="btn btn-danger" th:text="#{cart_delete}">Delete</a>
+                                    </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row my-5">
+                <div class="col-lg-8 col-sm-12"></div>
+                <div class="col-lg-4 col-sm-12">
+                    <div class="order-box">
+                        <h3 th:text="#{cart_order}">Order summary</h3>
+                        <div class="d-flex">
+                            <h4 th:text="#{cart_sub}">Sub Total</h4>
+                            <div class="ml-auto font-weight-bold" th:text="${subTotal != null ? subTotal + 'BGN' : '0BGN' }"></div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex">
+                            <h4 th:text="#{cart_shipping}">Shipping Cost</h4>
+                            <div class="ml-auto font-weight-bold"> ---</div>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total">
+                            <h5 th:text="#{cart_grand}">Grand Total</h5>
+                            <div class="ml-auto h5" th:text="${subTotal != null ? subTotal + 'BGN' : '0BGN' }"></div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                    <div class="col-12 d-flex shopping-box" th:if="${shoppingCart != null && shoppingCart.totalItems != 0}">
+                        <a th:href="@{/check-out}" class="ml-auto btn hvr-hover" style="background: #FCA32A" th:text="#{cart_checkout}">Checkout</a>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer">
+</footer>
+
+<div th:replace="fragments/scripts"></div>
+
+</body>
+</html>

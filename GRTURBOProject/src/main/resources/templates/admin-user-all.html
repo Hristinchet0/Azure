@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments/fragments::header"></head>
+<body id="page-top">
+<div id="wrapper">
+    <ul th:replace="fragments/fragments::sidebar"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="fragments/fragments::top-navbar"></nav>
+
+            <div class="table-main table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">User Id</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Delete</th>
+                        <th scope="col">Update</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="user, iStat : ${users}">
+                        <td th:text="${user.id}">1</td>
+                        <td th:text="${user.firstName}">Hristina</td>
+                        <td th:text="${user.lastName}">Racheva</td>
+                        <td th:text="${user.email}">hristina@test.com</td>
+                        <td th:text="${user.roles}">User</td>
+
+                        <td><a href="" th:href="@{/admin/user/delete/{id}(id=${user.id})}"
+                               class="btn btn-danger">Delete</a></td>
+                        <td><a href="" th:href="@{/admin/user/update/{id}(id=${user.id})}" class="btn btn-warning">Update</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<a th:replace="fragments/fragments::scroll"></a>
+<div th:replace="fragments/fragments::script"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>

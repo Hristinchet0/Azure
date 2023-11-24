@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="fragments/fragments::header"></head>
+<body id="page-top">
+<div id="wrapper">
+    <ul th:replace="fragments/fragments::sidebar"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="fragments/fragments::top-navbar"></nav>
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}"></p>
+            </div>
+            <div class="table-main table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="order-id">Order ID</th>
+                        <th class="user-name">Customer</th>
+                        <th class="order-date">Order Date</th>
+                        <th class="order-status">Order Status</th>
+                        <th class="total-pr">Total Price</th>
+                        <th class="payment-method">Payment Method</th>
+                        <th>Action</th>
+                        <th>Action</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td class="order-id" th:text="${order.id}"></td>
+                        <td class="user-name"
+                            th:text="${order.customer.firstName + ' ' + order.customer.lastName}"></td>
+                        <td class="order-date">
+                            <span><b th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></b></span>
+                        </td>
+                        <td class="order-status" th:text="${order.orderStatus}"></td>
+                        <td class="total-pr">
+                            <p style="color: red" th:text="${order.totalPrice}"></p>
+                        </td>
+                        <td class="payment-method" style="color: black">
+                            <span th:text="${order.paymentMethod}"></span>
+                        </td>
+                        <td>
+                            <form th:action="@{/accept-order}" method="post">
+                                <input type="hidden" name="id" th:value="${order.id}"/>
+                                <button type="submit" class="btn btn-secondary" th:if="${!order.accept}">Accept</button>
+                            </form>
+                            <!--                            <a th:if="${order.accept != false}" th:href="@{/cancel-order/(id=${order.id})}" class="btn btn-primary">Cancel</a>-->
+                        </td>
+                        <td>
+                            <form id="cancelOrderForm" th:action="@{/api/admin/cancel-order}" method="post">
+                                <input type="hidden" name="id" th:value="${order.id}"/>
+                                <button type="submit" class="btn btn-primary"
+                                        th:if="${order.accept and order.orderStatus != order.orderStatus.SHIPPED}">
+                                    Cancel
+                                </button>
+                            </form>
+                        </td>
+
+                        <td>
+                            <form th:action="@{/admin/send-order}" method="post">
+                                <input type="hidden" name="id" th:value="${order.id}"/>
+                                <button type="submit" class="btn btn-primary" th:if="${order.accept}">Shipping
+                                    Confirmation
+                                </button>
+                            </form>
+                        </td>
+
+                        <td>
+                            <form th:action="@{/admin/view-order-detail}" method="post">
+                                <input type="hidden" name="orderId" th:value="${order.id}"/>
+                                <button type="submit" class="btn btn-info">View Order Detail</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <footer th:replace="fragments/fragments::footer"></footer>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a th:replace="fragments/fragments::scroll"></a>
+<div th:replace="fragments/fragments::script"></div>
+
+
+<script th:src="@{/js/cancel-order.js}"></script>
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>
